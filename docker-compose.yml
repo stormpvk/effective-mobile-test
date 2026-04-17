@@ -1,0 +1,73 @@
+name: em-test
+
+services:
+  
+  nginx:
+    image: nginx:1.29
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    user: "101:101" #user nginx
+    container_name: nginx
+    working_dir: /nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+    networks:
+      - em-test-lan0
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 24M
+  
+  backend:
+    build: ./backend
+    image: backend:1.0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    user: "65534:65534" #user nobody
+    container_name: backend
+    working_dir: /backend
+    volumes:
+      - ./backend/app.py:/backend/app.py
+    command: python3 app.py
+    expose:
+      - "8080"
+    networks:
+      - em-test-lan0
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 24M
+    
+networks:
+  em-test-lan0:
+    name: em-test-lan0
+    driver: bridge
