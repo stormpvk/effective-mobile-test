@@ -1,6 +1,6 @@
 <div align=center><img width="410" height="274" alt="image" src="https://github.com/user-attachments/assets/3d06ef76-f4e3-4aed-b4a0-4cfafd5bd93b" /></div>
 <div align=center><h1>Реализация тестового задания на позицию DevOps</h1></div>
-<div align=center><h2>Исполнитель Корнев А.А.</h2></div>
+<div align=center><h2>Исполнитель Корнев А.А. <a href="mailto:stormpvk@mail.ru">stormpvk@mail.ru</a></h2></div>
 Проект разворачивает два контейнера с приложениями (nginx и python http.sever) с помощью файла docker-compose.yml, после чего контейнеры взаимодействуют друг с другом.</br>
 <h3>1. Установка</h3>
 Предварительные требования: на хосте должны быть установлены пакеты docker, docker compose, git.</br>
@@ -33,3 +33,13 @@
 - хост получает http запрос на 80 порт и перенаправляет его на 80 порт контейнера nginx</br>
 - nginx, получив запрос на 80 порт, перенаправляет его через Reverse proxy на порт 8080 контейнеру backed</br>
 - контейнер backend с запущенным http.server получает запрос на 8080 порт и отдает строку <code>Hello from Effective Mobile!</code></br>
+<h3>4. Удаление сервисов</h3>
+Для удаления сервисов необходимо остановить контейнеры - перейти в папку <b>/projects/effective-mobile-test</b> и выполнить команду:</br>
+<code>docker compose down</code></br>
+После выполнения команды будут удалены контейнеры сервисов и сеть проекта:</br>
+<img width="831" height="121" alt="image" src="https://github.com/user-attachments/assets/d4bed2be-eaf0-4598-af56-61a7cc72f9c2" /></b>
+На следующем этапе необходимо удалить созданные образы командой:</br>
+<code>docker rmi backend:1.0 nginx:1.29</code></br>
+На финальном этапе необходимо удалить папку проекта со всем содержимом:</br>
+<code>rm -fr /projects/effective-mobile-test/</code></br>
+Удаление проекта завершено.
